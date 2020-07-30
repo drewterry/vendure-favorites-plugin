@@ -1,3 +1,5 @@
 node_modules
 .idea
 /lib
+
+src/e2e/__data__

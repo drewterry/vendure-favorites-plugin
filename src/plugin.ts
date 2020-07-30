@@ -1,20 +1,24 @@
-import { PluginCommonModule, VendurePlugin } from '@vendure/core';
-import { PluginInitOptions } from './types';
-import { PLUGIN_INIT_OPTIONS } from './constants';
-import { ExampleEntity } from './entities/example.entity';
-import { ExampleService } from './service/example.service';
+import { VendurePlugin, PluginCommonModule, LanguageCode } from '@vendure/core';
+import { Favorite } from './entities/favorite.entity'
+import { adminApiExtensions } from './api/api-extensions';
 import { shopApiExtensions } from './api/api-extensions';
-import { ExampleResolver } from './api/example.resolver';
+import { CustomerEntityResolver } from './api/customer-entity.resolver';
+import { FavoriteEntityResolver } from './api/favorite-entity.resolver';
+import { FavoriteShopResolver } from './api/favorite-shop.resolver';
+import { AdminUiExtension } from '@vendure/ui-devkit/compiler';
+import { PLUGIN_INIT_OPTIONS } from './constants'
+import { PluginInitOptions } from './types';
+import path from 'path';
 
 /**
- * An example Vendure plugin.
+ * A Vendure plugin to give customers the ability to favorite products.
  *
  * @example
  * ```TypeScript
  * export const config: VendureConfig = {
  *   //...
  *   plugins: [
- *     ExamplePlugin.init({
+ *     FavoritesPlugin.init({
  *       // options
  *     }),
  *   ]
@@ -22,31 +26,57 @@ import { ExampleResolver } from './api/example.resolver';
  * ```
  */
 @VendurePlugin({
-    // Importing the PluginCommonModule gives all of our plugin's injectables (services, resolvers)
-    // access to the Vendure core providers. See https://www.vendure.io/docs/typescript-api/plugin/plugin-common-module/
-    imports: [PluginCommonModule],
-    entities: [ExampleEntity],
-    shopApiExtensions: {
-        schema: shopApiExtensions,
-        resolvers: [ExampleResolver],
-    },
-    providers: [
-        ExampleService,
-        // By definiting the `PLUGIN_INIT_OPTIONS` symbol as a provider, we can then inject the
-        // user-defined options into other classes, such as the {@link ExampleService}.
-        { provide: PLUGIN_INIT_OPTIONS, useFactory: () => ExamplePlugin.options },
-    ]
+  imports: [PluginCommonModule],
+  entities: [Favorite],
+  adminApiExtensions: {
+    schema: adminApiExtensions,
+    resolvers: [CustomerEntityResolver, FavoriteEntityResolver],
+  },
+  shopApiExtensions: {
+    schema: shopApiExtensions,
+    resolvers: [CustomerEntityResolver, FavoriteEntityResolver, FavoriteShopResolver],
+  },
+  providers: [
+    // FavoritesService,
+    // By definiting the `PLUGIN_INIT_OPTIONS` symbol as a provider, we can then inject the
+    // user-defined options into other classes, such as the {@link ExampleService}.
+    { provide: PLUGIN_INIT_OPTIONS, useFactory: () => FavoritesPlugin.options },
+  ],
+  configuration: config => {
+    config.customFields.Customer.push({
+      type: 'boolean',
+      name: 'favorites',
+      label: [
+        {
+          languageCode: LanguageCode.en,
+          value: 'Favorites'
+        }
+      ],
+      public: false,
+    });
+    return config;
+  }
 })
-export class ExamplePlugin {
+export class FavoritesPlugin {
+  static options: PluginInitOptions;
 
-    static options: PluginInitOptions;
-
-    /**
+  /**
      * The static `init()` method is a convention used by Vendure plugins which allows options
      * to be configured by the user.
      */
     static init(options: PluginInitOptions) {
-        this.options = options;
-        return ExamplePlugin;
-    }
+      this.options = options;
+      return FavoritesPlugin;
+  }
+  
+  // static uiExtensions: AdminUiExtension = {
+  //     extensionPath: path.join(__dirname, 'ui'),
+  //     ngModules: [
+  //         {
+  //             type: 'shared' as const,
+  //             ngModuleFileName: 'favorites-ui-extension.module.ts',
+  //             ngModuleName: 'FavoritesUiExtensionModule',
+  //         }
+  //     ],
+  // };
 }
