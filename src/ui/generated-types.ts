@@ -8,11 +8,7 @@ export type Scalars = {
   Boolean: boolean,
   Int: number,
   Float: number,
-  /** 
- * A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the
-   * `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO
-   * 8601 standard for representation of dates and times using the Gregorian calendar.
- **/
+  /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   DateTime: any,
   /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any,
@@ -484,6 +480,10 @@ export type CreateCountryInput = {
   enabled: Scalars['Boolean'],
 };
 
+export type CreateCustomerCustomFieldsInput = {
+  favorites?: Maybe<Scalars['Boolean']>,
+};
+
 export type CreateCustomerGroupInput = {
   name: Scalars['String'],
   customerIds?: Maybe<Array<Scalars['ID']>>,
@@ -495,7 +495,7 @@ export type CreateCustomerInput = {
   lastName: Scalars['String'],
   phoneNumber?: Maybe<Scalars['String']>,
   emailAddress: Scalars['String'],
-  customFields?: Maybe<Scalars['JSON']>,
+  customFields?: Maybe<CreateCustomerCustomFieldsInput>,
 };
 
 export type CreateFacetInput = {
@@ -970,7 +970,7 @@ export type Customer = Node & {
   orders: OrderList,
   user?: Maybe<User>,
   favorites: FavoriteList,
-  customFields?: Maybe<Scalars['JSON']>,
+  customFields?: Maybe<CustomerCustomFields>,
 };
 
 
@@ -988,6 +988,11 @@ export type CustomerFavoritesArgs = {
   options?: Maybe<FavoriteListOptions>
 };
 
+export type CustomerCustomFields = {
+   __typename?: 'CustomerCustomFields',
+  favorites?: Maybe<Scalars['Boolean']>,
+};
+
 export type CustomerFilterParameter = {
   createdAt?: Maybe<DateOperators>,
   updatedAt?: Maybe<DateOperators>,
@@ -996,6 +1001,7 @@ export type CustomerFilterParameter = {
   lastName?: Maybe<StringOperators>,
   phoneNumber?: Maybe<StringOperators>,
   emailAddress?: Maybe<StringOperators>,
+  favorites?: Maybe<BooleanOperators>,
 };
 
 export type CustomerGroup = Node & {
@@ -1060,6 +1066,7 @@ export type CustomerSortParameter = {
   lastName?: Maybe<SortOrder>,
   phoneNumber?: Maybe<SortOrder>,
   emailAddress?: Maybe<SortOrder>,
+  favorites?: Maybe<SortOrder>,
 };
 
 export type CustomField = {
@@ -3812,6 +3819,10 @@ export type UpdateCountryInput = {
   enabled?: Maybe<Scalars['Boolean']>,
 };
 
+export type UpdateCustomerCustomFieldsInput = {
+  favorites?: Maybe<Scalars['Boolean']>,
+};
+
 export type UpdateCustomerGroupInput = {
   id: Scalars['ID'],
   name?: Maybe<Scalars['String']>,
@@ -3824,7 +3835,7 @@ export type UpdateCustomerInput = {
   lastName?: Maybe<Scalars['String']>,
   phoneNumber?: Maybe<Scalars['String']>,
   emailAddress?: Maybe<Scalars['String']>,
-  customFields?: Maybe<Scalars['JSON']>,
+  customFields?: Maybe<UpdateCustomerCustomFieldsInput>,
 };
 
 export type UpdateCustomerNoteInput = {
@@ -3999,41 +4010,12 @@ export namespace ProductReview {
   export type Fragment = ProductReviewFragment;
 }
 
-export namespace GetAllReviews {
-  export type Variables = GetAllReviewsQueryVariables;
-  export type Query = GetAllReviewsQuery;
-  export type ProductReviews = GetAllReviewsQuery['productReviews'];
-  export type Items = ProductReviewFragment;
-  export type Product = (NonNullable<GetAllReviewsQuery['productReviews']['items'][0]>)['product'];
-  export type FeaturedAsset = (NonNullable<(NonNullable<GetAllReviewsQuery['productReviews']['items'][0]>)['product']['featuredAsset']>);
-}
-
-export namespace UpdateReview {
-  export type Variables = UpdateReviewMutationVariables;
-  export type Mutation = UpdateReviewMutation;
-  export type UpdateProductReview = ProductReviewFragment;
-}
-
-export namespace ApproveReview {
-  export type Variables = ApproveReviewMutationVariables;
-  export type Mutation = ApproveReviewMutation;
-  export type ApproveProductReview = (NonNullable<ApproveReviewMutation['approveProductReview']>);
-  export type Product = (NonNullable<ApproveReviewMutation['approveProductReview']>)['product'];
-  export type CustomFields = (NonNullable<(NonNullable<ApproveReviewMutation['approveProductReview']>)['product']['customFields']>);
-}
-
-export namespace RejectReview {
-  export type Variables = RejectReviewMutationVariables;
-  export type Mutation = RejectReviewMutation;
-  export type RejectProductReview = (NonNullable<RejectReviewMutation['rejectProductReview']>);
-}
-
 export namespace GetReviewForProduct {
   export type Variables = GetReviewForProductQueryVariables;
   export type Query = GetReviewForProductQuery;
   export type Product = (NonNullable<GetReviewForProductQuery['product']>);
   export type Reviews = (NonNullable<GetReviewForProductQuery['product']>)['reviews'];
-  export type Items = ProductReviewFragment;
+  export type Items = (NonNullable<(NonNullable<GetReviewForProductQuery['product']>)['reviews']['items'][0]>);
 }
 
 export namespace GetReviewsHistogram {
@@ -4045,20 +4027,15 @@ export namespace GetReviewsHistogram {
   export type ReviewsHistogram = (NonNullable<(NonNullable<GetReviewsHistogramQuery['product']>)['reviewsHistogram'][0]>);
 }
 
-export namespace GetProductName {
-  export type Variables = GetProductNameQueryVariables;
-  export type Query = GetProductNameQuery;
-  export type Product = (NonNullable<GetProductNameQuery['product']>);
-}
-
-export namespace GetReview {
-  export type Variables = GetReviewQueryVariables;
-  export type Query = GetReviewQuery;
-  export type ProductReview = ProductReviewFragment;
-  export type Product = (NonNullable<GetReviewQuery['productReview']>)['product'];
-  export type FeaturedAsset = (NonNullable<(NonNullable<GetReviewQuery['productReview']>)['product']['featuredAsset']>);
-  export type ProductVariant = (NonNullable<(NonNullable<GetReviewQuery['productReview']>)['productVariant']>);
-  export type _FeaturedAsset = (NonNullable<(NonNullable<(NonNullable<GetReviewQuery['productReview']>)['productVariant']>)['featuredAsset']>);
+export namespace GetCustomerFavorites {
+  export type Variables = GetCustomerFavoritesQueryVariables;
+  export type Query = GetCustomerFavoritesQuery;
+  export type Customer = (NonNullable<GetCustomerFavoritesQuery['customer']>);
+  export type Favorites = (NonNullable<GetCustomerFavoritesQuery['customer']>)['favorites'];
+  export type Items = (NonNullable<(NonNullable<GetCustomerFavoritesQuery['customer']>)['favorites']['items'][0]>);
+  export type Product = (NonNullable<(NonNullable<(NonNullable<GetCustomerFavoritesQuery['customer']>)['favorites']['items'][0]>)['product']>);
+  export type FeaturedAsset = (NonNullable<(NonNullable<(NonNullable<(NonNullable<GetCustomerFavoritesQuery['customer']>)['favorites']['items'][0]>)['product']>)['featuredAsset']>);
+  export type FocalPoint = (NonNullable<(NonNullable<(NonNullable<(NonNullable<(NonNullable<GetCustomerFavoritesQuery['customer']>)['favorites']['items'][0]>)['product']>)['featuredAsset']>)['focalPoint']>);
 }
 
 export type ProductReviewFragment = (
@@ -4066,87 +4043,15 @@ export type ProductReviewFragment = (
   & Pick<ProductReview, 'id' | 'createdAt' | 'updatedAt' | 'authorName' | 'authorLocation' | 'summary' | 'body' | 'rating' | 'state' | 'upvotes' | 'downvotes' | 'response' | 'responseCreatedAt'>
 );
 
-export type GetAllReviewsQueryVariables = {
-  options?: Maybe<ProductReviewListOptions>
-};
-
-
-export type GetAllReviewsQuery = (
-  { __typename?: 'Query' }
-  & { productReviews: (
-    { __typename?: 'ProductReviewList' }
-    & Pick<ProductReviewList, 'totalItems'>
-    & { items: Array<(
-      { __typename?: 'ProductReview' }
-      & { product: (
-        { __typename?: 'Product' }
-        & Pick<Product, 'id' | 'name'>
-        & { featuredAsset: Maybe<(
-          { __typename?: 'Asset' }
-          & Pick<Asset, 'id' | 'preview'>
-        )> }
-      ) }
-      & ProductReviewFragment
-    )> }
-  ) }
-);
-
-export type UpdateReviewMutationVariables = {
-  input: UpdateProductReviewInput
-};
-
-
-export type UpdateReviewMutation = (
-  { __typename?: 'Mutation' }
-  & { updateProductReview: (
-    { __typename?: 'ProductReview' }
-    & ProductReviewFragment
-  ) }
-);
-
-export type ApproveReviewMutationVariables = {
-  id: Scalars['ID']
-};
-
-
-export type ApproveReviewMutation = (
-  { __typename?: 'Mutation' }
-  & { approveProductReview: Maybe<(
-    { __typename?: 'ProductReview' }
-    & Pick<ProductReview, 'id' | 'state'>
-    & { product: (
-      { __typename?: 'Product' }
-      & Pick<Product, 'id'>
-      & { customFields: Maybe<(
-        { __typename?: 'ProductCustomFields' }
-        & Pick<ProductCustomFields, 'reviewCount' | 'reviewRating'>
-      )> }
-    ) }
-  )> }
-);
-
-export type RejectReviewMutationVariables = {
-  id: Scalars['ID']
-};
-
-
-export type RejectReviewMutation = (
-  { __typename?: 'Mutation' }
-  & { rejectProductReview: Maybe<(
-    { __typename?: 'ProductReview' }
-    & Pick<ProductReview, 'id' | 'state'>
-  )> }
-);
-
 export type GetReviewForProductQueryVariables = {
-  productId: Scalars['ID'],
-  options?: Maybe<ProductReviewListOptions>
+  productId: Scalars['ID'];
+  options?: Maybe<ProductReviewListOptions>;
 };
 
 
 export type GetReviewForProductQuery = (
   { __typename?: 'Query' }
-  & { product: Maybe<(
+  & { product?: Maybe<(
     { __typename?: 'Product' }
     & Pick<Product, 'id'>
     & { reviews: (
@@ -4161,19 +4066,19 @@ export type GetReviewForProductQuery = (
 );
 
 export type GetReviewsHistogramQueryVariables = {
-  id: Scalars['ID']
+  id: Scalars['ID'];
 };
 
 
 export type GetReviewsHistogramQuery = (
   { __typename?: 'Query' }
-  & { product: Maybe<(
+  & { product?: Maybe<(
     { __typename?: 'Product' }
     & Pick<Product, 'id' | 'name'>
-    & { featuredAsset: Maybe<(
+    & { featuredAsset?: Maybe<(
       { __typename?: 'Asset' }
       & Pick<Asset, 'id' | 'preview'>
-    )>, customFields: Maybe<(
+    )>, customFields?: Maybe<(
       { __typename?: 'ProductCustomFields' }
       & Pick<ProductCustomFields, 'reviewRating' | 'reviewCount'>
     )>, reviewsHistogram: Array<(
@@ -4183,43 +4088,35 @@ export type GetReviewsHistogramQuery = (
   )> }
 );
 
-export type GetProductNameQueryVariables = {
-  id: Scalars['ID']
+export type GetCustomerFavoritesQueryVariables = {
+  customerId: Scalars['ID'];
 };
 
 
-export type GetProductNameQuery = (
+export type GetCustomerFavoritesQuery = (
   { __typename?: 'Query' }
-  & { product: Maybe<(
-    { __typename?: 'Product' }
-    & Pick<Product, 'id' | 'name'>
-  )> }
-);
-
-export type GetReviewQueryVariables = {
-  id: Scalars['ID']
-};
-
-
-export type GetReviewQuery = (
-  { __typename?: 'Query' }
-  & { productReview: Maybe<(
-    { __typename?: 'ProductReview' }
-    & { product: (
-      { __typename?: 'Product' }
-      & Pick<Product, 'id' | 'name'>
-      & { featuredAsset: Maybe<(
-        { __typename?: 'Asset' }
-        & Pick<Asset, 'id' | 'preview'>
+  & { customer?: Maybe<(
+    { __typename?: 'Customer' }
+    & Pick<Customer, 'id'>
+    & { favorites: (
+      { __typename?: 'FavoriteList' }
+      & Pick<FavoriteList, 'totalItems'>
+      & { items: Array<(
+        { __typename?: 'Favorite' }
+        & Pick<Favorite, 'id'>
+        & { product?: Maybe<(
+          { __typename?: 'Product' }
+          & Pick<Product, 'id' | 'name'>
+          & { featuredAsset?: Maybe<(
+            { __typename?: 'Asset' }
+            & Pick<Asset, 'id' | 'preview'>
+            & { focalPoint?: Maybe<(
+              { __typename?: 'Coordinate' }
+              & Pick<Coordinate, 'x' | 'y'>
+            )> }
+          )> }
+        )> }
       )> }
-    ), productVariant: Maybe<(
-      { __typename?: 'ProductVariant' }
-      & Pick<ProductVariant, 'id' | 'name'>
-      & { featuredAsset: Maybe<(
-        { __typename?: 'Asset' }
-        & Pick<Asset, 'id' | 'preview'>
-      )> }
-    )> }
-    & ProductReviewFragment
+    ) }
   )> }
 );

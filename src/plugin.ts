@@ -1,14 +1,16 @@
 import { VendurePlugin, PluginCommonModule, LanguageCode } from '@vendure/core';
+import { AdminUiExtension } from '@vendure/ui-devkit/compiler';
+import path from 'path';
+
 import { Favorite } from './entities/favorite.entity'
 import { adminApiExtensions } from './api/api-extensions';
 import { shopApiExtensions } from './api/api-extensions';
 import { CustomerEntityResolver } from './api/customer-entity.resolver';
 import { FavoriteEntityResolver } from './api/favorite-entity.resolver';
 import { FavoriteShopResolver } from './api/favorite-shop.resolver';
-import { AdminUiExtension } from '@vendure/ui-devkit/compiler';
 import { PLUGIN_INIT_OPTIONS } from './constants'
 import { PluginInitOptions } from './types';
-import path from 'path';
+import { FavoritesService } from './ui/providers/favorites.service';
 
 /**
  * A Vendure plugin to give customers the ability to favorite products.
@@ -37,7 +39,6 @@ import path from 'path';
     resolvers: [CustomerEntityResolver, FavoriteEntityResolver, FavoriteShopResolver],
   },
   providers: [
-    // FavoritesService,
     // By definiting the `PLUGIN_INIT_OPTIONS` symbol as a provider, we can then inject the
     // user-defined options into other classes, such as the {@link ExampleService}.
     { provide: PLUGIN_INIT_OPTIONS, useFactory: () => FavoritesPlugin.options },
@@ -61,22 +62,26 @@ export class FavoritesPlugin {
   static options: PluginInitOptions;
 
   /**
-     * The static `init()` method is a convention used by Vendure plugins which allows options
-     * to be configured by the user.
-     */
-    static init(options: PluginInitOptions) {
-      this.options = options;
-      return FavoritesPlugin;
+   * The static `init()` method is a convention used by Vendure plugins which allows options
+   * to be configured by the user.
+   */
+  static init(options: PluginInitOptions) {
+    this.options = options;
+    return FavoritesPlugin;
   }
   
-  // static uiExtensions: AdminUiExtension = {
-  //     extensionPath: path.join(__dirname, 'ui'),
-  //     ngModules: [
-  //         {
-  //             type: 'shared' as const,
-  //             ngModuleFileName: 'favorites-ui-extension.module.ts',
-  //             ngModuleName: 'FavoritesUiExtensionModule',
-  //         }
-  //     ],
-  // };
+  
+  static uiExtensions: AdminUiExtension = {
+    translations: {
+      en: path.join(__dirname, 'ui/translations/en.json')
+    },
+    extensionPath: path.join(__dirname, 'ui'),
+    ngModules: [
+      {
+        type: 'shared' as const,
+        ngModuleFileName: 'favorites-ui-extension.module.ts',
+        ngModuleName: 'FavoritesUiExtensionModule',
+      }
+    ],
+  };
 }

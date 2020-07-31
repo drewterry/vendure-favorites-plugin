@@ -6,7 +6,8 @@ import { map, startWith, distinctUntilChanged, debounceTime, tap, takeUntil, swi
 
 import { FormControl } from '@angular/forms';
 import { CustomFieldConfigType, CustomFieldControl } from '@vendure/admin-ui/core';
-import { FavoritesService } from 'src/plugins/favorites-plugin/favorites.service';
+import { FavoritesService } from '../../providers/favorites.service';
+import { GetCustomerFavorites } from '../../generated-types';
 
 type StarType = 'empty' | 'full' | 'half';
 
@@ -19,28 +20,23 @@ type StarType = 'empty' | 'full' | 'half';
 export class FavoritesListComponent implements CustomFieldControl, OnInit, OnDestroy {
     customFieldConfig!: CustomFieldConfigType;
     formControl!: FormControl;
-
-    customerId: string | null = null;
-
-    favorites$!: Observable<GetCollectionFavorites.Items[]>;
+    
+    showList = false
+    customerId$!: Observable<string | null>;
+    favorites$!: Observable<GetCustomerFavorites.Items[]>;
     favoritesTotalItems$!: Observable<number>;
     favoritesItemsPerPage$!: Observable<number>;
     favoritesCurrentPage$!: Observable<number>;
     filterTermControl = new FormControl('');
-    private collectionIdChange$ = new BehaviorSubject<string>('');
     private refresh$ = new BehaviorSubject<boolean>(true);
     private destroy$ = new Subject<void>();
 
     constructor(private route: ActivatedRoute, private router: Router, private favoritesService: FavoritesService) {}
 
     ngOnInit() {
-        this.route.paramMap.subscribe((paramMap) => {
-            this.customerId = paramMap.get("id");
-      
-            if (this.customerId) {
-                console.log(this.customerId)
-            }
-        })
+        this.customerId$ = this.route.paramMap.pipe(
+            map(paramMap => paramMap.get("id"))
+        );
 
         this.favoritesCurrentPage$ = this.route.paramMap.pipe(
             map(qpm => qpm.get('favoritesPage')),
@@ -63,7 +59,7 @@ export class FavoritesListComponent implements CustomFieldControl, OnInit, OnDes
         );
 
         const collection$ = combineLatest(
-            this.collectionIdChange$,
+            this.customerId$,
             this.favoritesCurrentPage$,
             this.favoritesItemsPerPage$,
             filterTerm$,
@@ -76,16 +72,16 @@ export class FavoritesListComponent implements CustomFieldControl, OnInit, OnDes
                 if (id) {
                     return this.favoritesService
                         .getFavoritesList(id, take, skip, filterTerm)
-                        .mapSingle(data => data.collection);
+                        .mapSingle(data => data.customer?.favorites);
                 } else {
                     return of(null);
                 }
             }),
         );
 
-        this.favorites$ = collection$.pipe(map(result => (result ? result.productVariants.items : [])));
+        this.favorites$ = collection$.pipe(map(result => (result ? result.items : [])));
         this.favoritesTotalItems$ = collection$.pipe(
-            map(result => (result ? result.productVariants.totalItems : 0)),
+            map(result => (result ? result.totalItems : 0)),
         );
     }
 
@@ -104,6 +100,11 @@ export class FavoritesListComponent implements CustomFieldControl, OnInit, OnDes
 
     refresh() {
         this.refresh$.next(true);
+    }
+
+    toggleList() {
+        console.log(this.showList)
+        this.showList = !this.showList
     }
 
     private setParam(key: string, value: any) {
