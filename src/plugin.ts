@@ -10,7 +10,6 @@ import { FavoriteEntityResolver } from './api/favorite-entity.resolver';
 import { FavoriteShopResolver } from './api/favorite-shop.resolver';
 import { PLUGIN_INIT_OPTIONS } from './constants'
 import { PluginInitOptions } from './types';
-import { FavoritesService } from './ui/providers/favorites.service';
 
 /**
  * A Vendure plugin to give customers the ability to favorite products.
