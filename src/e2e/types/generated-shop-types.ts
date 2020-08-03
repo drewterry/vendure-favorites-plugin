@@ -8,11 +8,7 @@ export type Scalars = {
   Boolean: boolean,
   Int: number,
   Float: number,
-  /** 
- * A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the
-   * `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO
-   * 8601 standard for representation of dates and times using the Gregorian calendar.
- **/
+  /** A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   DateTime: any,
   /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: any,
@@ -689,7 +685,8 @@ export type CustomerOrdersArgs = {
 
 
 export type CustomerFavoritesArgs = {
-  options?: Maybe<FavoriteListOptions>
+  options?: Maybe<FavoriteListOptions>,
+  productNameFilter?: Maybe<Scalars['String']>
 };
 
 export type CustomerFilterParameter = {
@@ -1477,8 +1474,6 @@ export type Mutation = {
   requestPasswordReset?: Maybe<Scalars['Boolean']>,
   /** Resets a Customer's password based on the provided token */
   resetPassword: LoginResult,
-  submitProductReview: ProductReview,
-  voteOnReview: ProductReview,
   toggleFavorite: FavoriteList,
 };
 
@@ -1619,17 +1614,6 @@ export type MutationRequestPasswordResetArgs = {
 export type MutationResetPasswordArgs = {
   token: Scalars['String'],
   password: Scalars['String']
-};
-
-
-export type MutationSubmitProductReviewArgs = {
-  input: SubmitProductReviewInput
-};
-
-
-export type MutationVoteOnReviewArgs = {
-  id: Scalars['ID'],
-  vote: Scalars['Boolean']
 };
 
 
@@ -1901,21 +1885,12 @@ export type Product = Node & {
   facetValues: Array<FacetValue>,
   translations: Array<ProductTranslation>,
   collections: Array<Collection>,
-  reviews: ProductReviewList,
-  reviewsHistogram: Array<ProductReviewHistogramItem>,
   customFields?: Maybe<ProductCustomFields>,
-};
-
-
-export type ProductReviewsArgs = {
-  options?: Maybe<ProductReviewListOptions>
 };
 
 export type ProductCustomFields = {
    __typename?: 'ProductCustomFields',
   catImageUrl?: Maybe<Scalars['String']>,
-  reviewRating?: Maybe<Scalars['Float']>,
-  reviewCount?: Maybe<Scalars['Float']>,
 };
 
 export type ProductFilterParameter = {
@@ -1926,8 +1901,6 @@ export type ProductFilterParameter = {
   slug?: Maybe<StringOperators>,
   description?: Maybe<StringOperators>,
   catImageUrl?: Maybe<StringOperators>,
-  reviewRating?: Maybe<NumberOperators>,
-  reviewCount?: Maybe<NumberOperators>,
 };
 
 export type ProductList = PaginatedList & {
@@ -1988,76 +1961,6 @@ export type ProductOptionTranslation = {
   name: Scalars['String'],
 };
 
-export type ProductReview = Node & {
-   __typename?: 'ProductReview',
-  id: Scalars['ID'],
-  createdAt: Scalars['DateTime'],
-  updatedAt: Scalars['DateTime'],
-  product: Product,
-  productVariant?: Maybe<ProductVariant>,
-  summary: Scalars['String'],
-  body?: Maybe<Scalars['String']>,
-  rating: Scalars['Float'],
-  author?: Maybe<Customer>,
-  authorName: Scalars['String'],
-  authorLocation?: Maybe<Scalars['String']>,
-  upvotes: Scalars['Int'],
-  downvotes: Scalars['Int'],
-  state: Scalars['String'],
-  response?: Maybe<Scalars['String']>,
-  responseCreatedAt?: Maybe<Scalars['DateTime']>,
-};
-
-export type ProductReviewFilterParameter = {
-  createdAt?: Maybe<DateOperators>,
-  updatedAt?: Maybe<DateOperators>,
-  summary?: Maybe<StringOperators>,
-  body?: Maybe<StringOperators>,
-  rating?: Maybe<NumberOperators>,
-  authorName?: Maybe<StringOperators>,
-  authorLocation?: Maybe<StringOperators>,
-  upvotes?: Maybe<NumberOperators>,
-  downvotes?: Maybe<NumberOperators>,
-  state?: Maybe<StringOperators>,
-  response?: Maybe<StringOperators>,
-  responseCreatedAt?: Maybe<DateOperators>,
-};
-
-export type ProductReviewHistogramItem = {
-   __typename?: 'ProductReviewHistogramItem',
-  bin: Scalars['Int'],
-  frequency: Scalars['Int'],
-};
-
-export type ProductReviewList = PaginatedList & {
-   __typename?: 'ProductReviewList',
-  items: Array<ProductReview>,
-  totalItems: Scalars['Int'],
-};
-
-export type ProductReviewListOptions = {
-  skip?: Maybe<Scalars['Int']>,
-  take?: Maybe<Scalars['Int']>,
-  sort?: Maybe<ProductReviewSortParameter>,
-  filter?: Maybe<ProductReviewFilterParameter>,
-};
-
-export type ProductReviewSortParameter = {
-  id?: Maybe<SortOrder>,
-  createdAt?: Maybe<SortOrder>,
-  updatedAt?: Maybe<SortOrder>,
-  summary?: Maybe<SortOrder>,
-  body?: Maybe<SortOrder>,
-  rating?: Maybe<SortOrder>,
-  authorName?: Maybe<SortOrder>,
-  authorLocation?: Maybe<SortOrder>,
-  upvotes?: Maybe<SortOrder>,
-  downvotes?: Maybe<SortOrder>,
-  state?: Maybe<SortOrder>,
-  response?: Maybe<SortOrder>,
-  responseCreatedAt?: Maybe<SortOrder>,
-};
-
 export type ProductSortParameter = {
   id?: Maybe<SortOrder>,
   createdAt?: Maybe<SortOrder>,
@@ -2066,8 +1969,6 @@ export type ProductSortParameter = {
   slug?: Maybe<SortOrder>,
   description?: Maybe<SortOrder>,
   catImageUrl?: Maybe<SortOrder>,
-  reviewRating?: Maybe<SortOrder>,
-  reviewCount?: Maybe<SortOrder>,
 };
 
 export type ProductTranslation = {
@@ -2482,17 +2383,6 @@ export type StringOperators = {
   contains?: Maybe<Scalars['String']>,
 };
 
-export type SubmitProductReviewInput = {
-  productId: Scalars['ID'],
-  variantId?: Maybe<Scalars['ID']>,
-  customerId?: Maybe<Scalars['ID']>,
-  summary: Scalars['String'],
-  body: Scalars['String'],
-  rating: Scalars['Float'],
-  authorName: Scalars['String'],
-  authorLocation?: Maybe<Scalars['String']>,
-};
-
 export type TaxCategory = Node & {
    __typename?: 'TaxCategory',
   id: Scalars['ID'],
@@ -2588,19 +2478,19 @@ export namespace ToggleFavorite {
   export type Product = (NonNullable<(NonNullable<ToggleFavoriteMutation['toggleFavorite']['items'][0]>)['product']>);
 }
 
-export type GetOwnFavoritesQueryVariables = {};
+export type GetOwnFavoritesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetOwnFavoritesQuery = (
   { __typename?: 'Query' }
-  & { activeCustomer: Maybe<(
+  & { activeCustomer?: Maybe<(
     { __typename?: 'Customer' }
     & Pick<Customer, 'id'>
     & { favorites: (
       { __typename?: 'FavoriteList' }
       & { items: Array<(
         { __typename?: 'Favorite' }
-        & { product: Maybe<(
+        & { product?: Maybe<(
           { __typename?: 'Product' }
           & Pick<Product, 'id'>
         )> }
@@ -2609,9 +2499,9 @@ export type GetOwnFavoritesQuery = (
   )> }
 );
 
-export type ToggleFavoriteMutationVariables = {
-  productId: Scalars['ID']
-};
+export type ToggleFavoriteMutationVariables = Exact<{
+  productId: Scalars['ID'];
+}>;
 
 
 export type ToggleFavoriteMutation = (
@@ -2621,7 +2511,7 @@ export type ToggleFavoriteMutation = (
     & { items: Array<(
       { __typename?: 'Favorite' }
       & Pick<Favorite, 'id'>
-      & { product: Maybe<(
+      & { product?: Maybe<(
         { __typename?: 'Product' }
         & Pick<Product, 'id'>
       )> }

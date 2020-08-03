@@ -8,28 +8,18 @@ export class FavoritesService {
     constructor(private dataService: DataService) {}
 
     getFavoritesList(customerId: string, take: number = 10, skip: number = 0, filterTerm?: string)  {
-        const filter = filterTerm
-            ? {
-                    filter: {
-                        emailAddress: {
-                            contains: filterTerm,
-                        },
-                    },
-                }
-            : {};
-
         return this.dataService.query<
             GetCustomerFavorites.Query, 
             GetCustomerFavorites.Variables
         >(
             GET_CUSTOMER_FAVORITES,
             {
-                customerId
-                // options: {
-                //     take,
-                //     skip,
-                //     ...filter,
-                // },
+                customerId,
+                options: {
+                    take,
+                    skip,
+                },
+                productNameFilter: filterTerm
             },
         );
     }

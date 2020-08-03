@@ -35,7 +35,7 @@ export class FavoriteShopResolver {
     const favorite = await favoriteRepo.findOne({
       where: { 
         product: { id: productId }, 
-        customer: { id: customerId} 
+        customer: { id: customerId } 
       },
       relations: ['customer', 'product'],
     })

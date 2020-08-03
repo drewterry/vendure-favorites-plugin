@@ -525,8 +525,6 @@ export type CreateGroupOptionInput = {
 
 export type CreateProductCustomFieldsInput = {
   catImageUrl?: Maybe<Scalars['String']>,
-  reviewRating?: Maybe<Scalars['Float']>,
-  reviewCount?: Maybe<Scalars['Float']>,
 };
 
 export type CreateProductInput = {
@@ -985,7 +983,8 @@ export type CustomerOrdersArgs = {
 
 
 export type CustomerFavoritesArgs = {
-  options?: Maybe<FavoriteListOptions>
+  options?: Maybe<FavoriteListOptions>,
+  productNameFilter?: Maybe<Scalars['String']>
 };
 
 export type CustomerCustomFields = {
@@ -1991,9 +1990,6 @@ export type Mutation = {
   /** Remove members from a Zone */
   removeMembersFromZone: Zone,
   addRandomCat: Product,
-  updateProductReview: ProductReview,
-  approveProductReview?: Maybe<ProductReview>,
-  rejectProductReview?: Maybe<ProductReview>,
 };
 
 
@@ -2459,21 +2455,6 @@ export type MutationAddRandomCatArgs = {
   id: Scalars['ID']
 };
 
-
-export type MutationUpdateProductReviewArgs = {
-  input: UpdateProductReviewInput
-};
-
-
-export type MutationApproveProductReviewArgs = {
-  id: Scalars['ID']
-};
-
-
-export type MutationRejectProductReviewArgs = {
-  id: Scalars['ID']
-};
-
 export type NativeAuthInput = {
   username: Scalars['String'],
   password: Scalars['String'],
@@ -2760,21 +2741,12 @@ export type Product = Node & {
   facetValues: Array<FacetValue>,
   translations: Array<ProductTranslation>,
   collections: Array<Collection>,
-  reviews: ProductReviewList,
-  reviewsHistogram: Array<ProductReviewHistogramItem>,
   customFields?: Maybe<ProductCustomFields>,
-};
-
-
-export type ProductReviewsArgs = {
-  options?: Maybe<ProductReviewListOptions>
 };
 
 export type ProductCustomFields = {
    __typename?: 'ProductCustomFields',
   catImageUrl?: Maybe<Scalars['String']>,
-  reviewRating?: Maybe<Scalars['Float']>,
-  reviewCount?: Maybe<Scalars['Float']>,
 };
 
 export type ProductFilterParameter = {
@@ -2786,8 +2758,6 @@ export type ProductFilterParameter = {
   slug?: Maybe<StringOperators>,
   description?: Maybe<StringOperators>,
   catImageUrl?: Maybe<StringOperators>,
-  reviewRating?: Maybe<NumberOperators>,
-  reviewCount?: Maybe<NumberOperators>,
 };
 
 export type ProductList = PaginatedList & {
@@ -2862,76 +2832,6 @@ export type ProductOptionTranslationInput = {
   customFields?: Maybe<Scalars['JSON']>,
 };
 
-export type ProductReview = Node & {
-   __typename?: 'ProductReview',
-  id: Scalars['ID'],
-  createdAt: Scalars['DateTime'],
-  updatedAt: Scalars['DateTime'],
-  product: Product,
-  productVariant?: Maybe<ProductVariant>,
-  summary: Scalars['String'],
-  body?: Maybe<Scalars['String']>,
-  rating: Scalars['Float'],
-  author?: Maybe<Customer>,
-  authorName: Scalars['String'],
-  authorLocation?: Maybe<Scalars['String']>,
-  upvotes: Scalars['Int'],
-  downvotes: Scalars['Int'],
-  state: Scalars['String'],
-  response?: Maybe<Scalars['String']>,
-  responseCreatedAt?: Maybe<Scalars['DateTime']>,
-};
-
-export type ProductReviewFilterParameter = {
-  createdAt?: Maybe<DateOperators>,
-  updatedAt?: Maybe<DateOperators>,
-  summary?: Maybe<StringOperators>,
-  body?: Maybe<StringOperators>,
-  rating?: Maybe<NumberOperators>,
-  authorName?: Maybe<StringOperators>,
-  authorLocation?: Maybe<StringOperators>,
-  upvotes?: Maybe<NumberOperators>,
-  downvotes?: Maybe<NumberOperators>,
-  state?: Maybe<StringOperators>,
-  response?: Maybe<StringOperators>,
-  responseCreatedAt?: Maybe<DateOperators>,
-};
-
-export type ProductReviewHistogramItem = {
-   __typename?: 'ProductReviewHistogramItem',
-  bin: Scalars['Int'],
-  frequency: Scalars['Int'],
-};
-
-export type ProductReviewList = PaginatedList & {
-   __typename?: 'ProductReviewList',
-  items: Array<ProductReview>,
-  totalItems: Scalars['Int'],
-};
-
-export type ProductReviewListOptions = {
-  skip?: Maybe<Scalars['Int']>,
-  take?: Maybe<Scalars['Int']>,
-  sort?: Maybe<ProductReviewSortParameter>,
-  filter?: Maybe<ProductReviewFilterParameter>,
-};
-
-export type ProductReviewSortParameter = {
-  id?: Maybe<SortOrder>,
-  createdAt?: Maybe<SortOrder>,
-  updatedAt?: Maybe<SortOrder>,
-  summary?: Maybe<SortOrder>,
-  body?: Maybe<SortOrder>,
-  rating?: Maybe<SortOrder>,
-  authorName?: Maybe<SortOrder>,
-  authorLocation?: Maybe<SortOrder>,
-  upvotes?: Maybe<SortOrder>,
-  downvotes?: Maybe<SortOrder>,
-  state?: Maybe<SortOrder>,
-  response?: Maybe<SortOrder>,
-  responseCreatedAt?: Maybe<SortOrder>,
-};
-
 export type ProductSortParameter = {
   id?: Maybe<SortOrder>,
   createdAt?: Maybe<SortOrder>,
@@ -2940,8 +2840,6 @@ export type ProductSortParameter = {
   slug?: Maybe<SortOrder>,
   description?: Maybe<SortOrder>,
   catImageUrl?: Maybe<SortOrder>,
-  reviewRating?: Maybe<SortOrder>,
-  reviewCount?: Maybe<SortOrder>,
 };
 
 export type ProductTranslation = {
@@ -3160,8 +3058,6 @@ export type Query = {
   taxRate?: Maybe<TaxRate>,
   zones: Array<Zone>,
   zone?: Maybe<Zone>,
-  productReviews: ProductReviewList,
-  productReview?: Maybe<ProductReview>,
   favorite?: Maybe<Favorite>,
 };
 
@@ -3359,16 +3255,6 @@ export type QueryTaxRateArgs = {
 
 
 export type QueryZoneArgs = {
-  id: Scalars['ID']
-};
-
-
-export type QueryProductReviewsArgs = {
-  options?: Maybe<ProductReviewListOptions>
-};
-
-
-export type QueryProductReviewArgs = {
   id: Scalars['ID']
 };
 
@@ -3884,8 +3770,6 @@ export type UpdatePaymentMethodInput = {
 
 export type UpdateProductCustomFieldsInput = {
   catImageUrl?: Maybe<Scalars['String']>,
-  reviewRating?: Maybe<Scalars['Float']>,
-  reviewCount?: Maybe<Scalars['Float']>,
 };
 
 export type UpdateProductInput = {
@@ -3910,13 +3794,6 @@ export type UpdateProductOptionInput = {
   code?: Maybe<Scalars['String']>,
   translations?: Maybe<Array<ProductOptionGroupTranslationInput>>,
   customFields?: Maybe<Scalars['JSON']>,
-};
-
-export type UpdateProductReviewInput = {
-  id: Scalars['ID'],
-  summary?: Maybe<Scalars['String']>,
-  body?: Maybe<Scalars['String']>,
-  response?: Maybe<Scalars['String']>,
 };
 
 export type UpdateProductVariantInput = {
@@ -4006,27 +3883,6 @@ export type Zone = Node & {
   members: Array<Country>,
 };
 
-export namespace ProductReview {
-  export type Fragment = ProductReviewFragment;
-}
-
-export namespace GetReviewForProduct {
-  export type Variables = GetReviewForProductQueryVariables;
-  export type Query = GetReviewForProductQuery;
-  export type Product = (NonNullable<GetReviewForProductQuery['product']>);
-  export type Reviews = (NonNullable<GetReviewForProductQuery['product']>)['reviews'];
-  export type Items = (NonNullable<(NonNullable<GetReviewForProductQuery['product']>)['reviews']['items'][0]>);
-}
-
-export namespace GetReviewsHistogram {
-  export type Variables = GetReviewsHistogramQueryVariables;
-  export type Query = GetReviewsHistogramQuery;
-  export type Product = (NonNullable<GetReviewsHistogramQuery['product']>);
-  export type FeaturedAsset = (NonNullable<(NonNullable<GetReviewsHistogramQuery['product']>)['featuredAsset']>);
-  export type CustomFields = (NonNullable<(NonNullable<GetReviewsHistogramQuery['product']>)['customFields']>);
-  export type ReviewsHistogram = (NonNullable<(NonNullable<GetReviewsHistogramQuery['product']>)['reviewsHistogram'][0]>);
-}
-
 export namespace GetCustomerFavorites {
   export type Variables = GetCustomerFavoritesQueryVariables;
   export type Query = GetCustomerFavoritesQuery;
@@ -4038,58 +3894,10 @@ export namespace GetCustomerFavorites {
   export type FocalPoint = (NonNullable<(NonNullable<(NonNullable<(NonNullable<(NonNullable<GetCustomerFavoritesQuery['customer']>)['favorites']['items'][0]>)['product']>)['featuredAsset']>)['focalPoint']>);
 }
 
-export type ProductReviewFragment = (
-  { __typename?: 'ProductReview' }
-  & Pick<ProductReview, 'id' | 'createdAt' | 'updatedAt' | 'authorName' | 'authorLocation' | 'summary' | 'body' | 'rating' | 'state' | 'upvotes' | 'downvotes' | 'response' | 'responseCreatedAt'>
-);
-
-export type GetReviewForProductQueryVariables = {
-  productId: Scalars['ID'];
-  options?: Maybe<ProductReviewListOptions>;
-};
-
-
-export type GetReviewForProductQuery = (
-  { __typename?: 'Query' }
-  & { product?: Maybe<(
-    { __typename?: 'Product' }
-    & Pick<Product, 'id'>
-    & { reviews: (
-      { __typename?: 'ProductReviewList' }
-      & Pick<ProductReviewList, 'totalItems'>
-      & { items: Array<(
-        { __typename?: 'ProductReview' }
-        & ProductReviewFragment
-      )> }
-    ) }
-  )> }
-);
-
-export type GetReviewsHistogramQueryVariables = {
-  id: Scalars['ID'];
-};
-
-
-export type GetReviewsHistogramQuery = (
-  { __typename?: 'Query' }
-  & { product?: Maybe<(
-    { __typename?: 'Product' }
-    & Pick<Product, 'id' | 'name'>
-    & { featuredAsset?: Maybe<(
-      { __typename?: 'Asset' }
-      & Pick<Asset, 'id' | 'preview'>
-    )>, customFields?: Maybe<(
-      { __typename?: 'ProductCustomFields' }
-      & Pick<ProductCustomFields, 'reviewRating' | 'reviewCount'>
-    )>, reviewsHistogram: Array<(
-      { __typename?: 'ProductReviewHistogramItem' }
-      & Pick<ProductReviewHistogramItem, 'bin' | 'frequency'>
-    )> }
-  )> }
-);
-
 export type GetCustomerFavoritesQueryVariables = {
   customerId: Scalars['ID'];
+  options?: Maybe<FavoriteListOptions>;
+  productNameFilter?: Maybe<Scalars['String']>;
 };
 
 

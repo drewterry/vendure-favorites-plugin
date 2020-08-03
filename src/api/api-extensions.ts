@@ -15,7 +15,7 @@ export const commonApiExtensions = gql`
   }
 
   extend type Customer {
-    favorites(options: FavoriteListOptions): FavoriteList!
+    favorites(options: FavoriteListOptions, productNameFilter: String): FavoriteList!
   }
 
   # Auto-generated at runtime

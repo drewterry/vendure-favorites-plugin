@@ -103,7 +103,6 @@ export class FavoritesListComponent implements CustomFieldControl, OnInit, OnDes
     }
 
     toggleList() {
-        console.log(this.showList)
         this.showList = !this.showList
     }
 
