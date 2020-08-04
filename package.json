@@ -1,6 +1,6 @@
 {
   "name": "vendure-favorites-plugin",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A Vendure plugin for customer favorites",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
