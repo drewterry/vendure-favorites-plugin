@@ -16,7 +16,8 @@ jobs:
         
       - uses: actions/setup-node@v1
         with:
-          node-version: 12
+          always-auth: true
+          node-version: 12.x
           
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
