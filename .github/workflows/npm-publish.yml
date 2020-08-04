@@ -16,8 +16,8 @@ jobs:
         
       - uses: actions/setup-node@v1
         with:
-          always-auth: true
-          node-version: 12.x
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
           
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
