@@ -98,6 +98,6 @@ extend type Query {
 
 The Admin UI extension adds a favorites field to the customer detail page, allowing the user to view a list of the customer's favorites.
 
-![hidden-favorites](docs/hidden-favorites.png)
+![hidden-favorites](https://github.com/drewterry/vendure-favorites-plugin/blob/master/docs/hidden-favorites.png?raw=true)
 
-![show-favorites](docs/show-favorites.png)
+![show-favorites](https://github.com/drewterry/vendure-favorites-plugin/blob/master/docs/show-favorites.png?raw=true)
