@@ -15,7 +15,7 @@
     "build": "rimraf lib && tsc && cp -r ./src/ui ./lib/src/ui",
     "test": "yarn test:e2e",
     "test:e2e": "jest --config src/e2e/config/jest-config.js",
-    "semantic-release": "semantic-release"
+    "release": "semantic-release"
   },
   "devDependencies": {
     "@types/jest": "^26.0.7",
