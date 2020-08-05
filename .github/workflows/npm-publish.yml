@@ -42,7 +42,7 @@ jobs:
         run: yarn build
       
       - name: Publish Package
-        run: yarn publish
+        run: yarn release
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
 
