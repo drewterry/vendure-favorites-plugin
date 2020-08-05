@@ -1,6 +1,6 @@
 {
   "name": "vendure-favorites-plugin",
-  "version": "0.0.6",
+  "version": "0.0.0-development",
   "description": "A Vendure plugin for customer favorites",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -14,7 +14,8 @@
     "watch": "tsc --watch",
     "build": "rimraf lib && tsc && cp -r ./src/ui ./lib/src/ui",
     "test": "yarn test:e2e",
-    "test:e2e": "jest --config src/e2e/config/jest-config.js"
+    "test:e2e": "jest --config src/e2e/config/jest-config.js",
+    "semantic-release": "semantic-release"
   },
   "devDependencies": {
     "@types/jest": "^26.0.7",
@@ -26,6 +27,11 @@
     "jest": "^26.2.1",
     "rimraf": "^3.0.2",
     "ts-jest": "^26.1.4",
-    "typescript": "^3.9.5"
+    "typescript": "^3.9.5",
+    "semantic-release": "^17.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/drewterry/vendure-favorites-plugin.git"
   }
 }
