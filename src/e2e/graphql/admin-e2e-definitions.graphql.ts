@@ -21,6 +21,12 @@ export const GET_CUSTOMER = gql`
         customer(id: $customerId) {
             id
             emailAddress
+            history {
+                items {
+                    id
+                    data
+                }
+            }
         }
     }
 `;

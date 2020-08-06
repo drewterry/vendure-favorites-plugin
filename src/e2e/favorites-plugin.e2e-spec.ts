@@ -68,6 +68,19 @@ describe('favorites plugin', () => {
             expect(activeCustomer?.favorites.items[0].product?.id).toEqual(`T_${FAVORITE_PRODUCT_ID}`)
         })
 
+        it('adds a history event for customer favorite', async () => {
+            const { customer: { history: { items: history } } } = await adminClient.query<
+                GetCustomer.Query,
+                GetCustomer.Variables
+            >(GET_CUSTOMER, {
+                customerId: CUSTOMER_ID
+            })
+
+            const favoriteEvent = history.pop()
+
+            expect(favoriteEvent.data.note).toMatch('Customer added')
+        })
+
         it('can unfavorite a product', async () => {
             const { toggleFavorite } = await shopClient.query<
                 ToggleFavorite.Mutation,
@@ -84,6 +97,19 @@ describe('favorites plugin', () => {
             >(GET_OWN_FAVORITES)        
 
             expect(activeCustomer?.favorites.items).toHaveLength(0)
+        })
+
+        it('adds a history event for customer unfavorite', async () => {
+            const { customer: { history: { items: history } } } = await adminClient.query<
+                GetCustomer.Query,
+                GetCustomer.Variables
+            >(GET_CUSTOMER, {
+                customerId: CUSTOMER_ID
+            })
+
+            const favoriteEvent = history.pop()
+
+            expect(favoriteEvent.data.note).toMatch('Customer removed')
         })
     })
 

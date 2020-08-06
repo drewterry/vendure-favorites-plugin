@@ -3,3 +3,6 @@ node_modules
 lib
 
 src/e2e/__data__
+dev-server/tmp
+dev-server/admin-ui
+dev-server/static
