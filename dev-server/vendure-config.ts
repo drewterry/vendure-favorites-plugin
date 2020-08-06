@@ -64,7 +64,9 @@ export const headlessConfig: VendureConfig = {
       }),
       DefaultJobQueuePlugin,
       DefaultSearchPlugin,
-      FavoritesPlugin
+      FavoritesPlugin.init({
+          trackHistory: true
+      })
   ],
 };
 

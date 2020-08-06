@@ -58,7 +58,9 @@ import { PluginInitOptions } from './types';
   }
 })
 export class FavoritesPlugin {
-  static options: PluginInitOptions;
+  static options: PluginInitOptions = {
+    trackHistory: false
+  };
   
   /**
    * The static `init()` method is a convention used by Vendure plugins which allows options
