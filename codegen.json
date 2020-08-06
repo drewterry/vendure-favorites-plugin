@@ -8,7 +8,9 @@
       "schema": "http://localhost:3000/admin-api",
       "plugins": [
         {
-          "add": "// tslint:disable"
+          "add": {
+            "content": "// tslint:disable"
+          }
         },
         "typescript",
         "typescript-compatibility"
@@ -18,7 +20,9 @@
       "schema": "http://localhost:3000/shop-api",
       "plugins": [
         {
-          "add": "// tslint:disable"
+          "add": {
+            "content": "// tslint:disable"
+          }
         },
         "typescript",
         "typescript-compatibility"
@@ -29,7 +33,9 @@
       "documents": "src/e2e/graphql/shop-e2e-definitions.graphql.ts",
       "plugins": [
         {
-          "add": "// tslint:disable"
+          "add": {
+            "content": "// tslint:disable"
+          }
         },
         "typescript",
         "typescript-compatibility",
@@ -41,7 +47,9 @@
       "documents": "src/e2e/graphql/admin-e2e-definitions.graphql.ts",
       "plugins": [
         {
-          "add": "// tslint:disable"
+          "add": {
+            "content": "// tslint:disable"
+          }
         },
         "typescript",
         "typescript-compatibility",
