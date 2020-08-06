@@ -30,7 +30,7 @@ export const config: VendureConfig = {
 
 This plugin includes an optional Admin UI Extension.
 
-```typescript
+```ts
 AdminUiPlugin.init({
   ...
   app: compileUiExtensions({
