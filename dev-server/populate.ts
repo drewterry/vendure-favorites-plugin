@@ -5,7 +5,7 @@ import path from 'path';
 
 import { initialData } from './mock-data/data-sources/initial-data';
 
-import { config } from './vendure-config';
+import { headlessConfig } from './vendure-config';
 
 // tslint:disable:no-console
 
@@ -16,13 +16,13 @@ if (require.main === module) {
     // Running from command line
     const populateConfig = mergeConfig(
         defaultConfig,
-        mergeConfig(config, {
+        mergeConfig(headlessConfig, {
             authOptions: {
                 tokenMethod: 'bearer',
                 requireVerification: false,
             },
             importExportOptions: {
-                importAssetsDir: path.join(__dirname, './dev-server/mock-data/assets'),
+                importAssetsDir: path.join(__dirname, './mock-data/assets'),
             },
             workerOptions: {
                 runInMainProcess: true,

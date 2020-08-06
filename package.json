@@ -16,9 +16,12 @@
     "test": "yarn test:e2e",
     "test:e2e": "jest --config src/e2e/config/jest-config.js",
     "release": "semantic-release",
+    "run:dev": "docker-compose -f dev-server/docker-compose.yml up",
+    "db:start": "docker-compose -f dev-server/docker-compose.yml up -d database",
+    "db:stop": "docker-compose -f dev-server/docker-compose.yml stop database",
+    "db:populate": "yarn db:start && ts-node ./dev-server/populate.ts && yarn db:stop",
     "run:server": "ts-node ./dev-server/index.ts",
     "run:worker": "ts-node ./dev-server/index-worker.ts",
-    "populate": "ts-node ./dev-server/populate.ts",
     "generate-types": "graphql-codegen --config ./codegen.json"
   },
   "devDependencies": {

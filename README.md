@@ -45,6 +45,10 @@ AdminUiPlugin.init({
 })
 ```
 
+## Plugin Options
+
+
+
 ## API Extensions
 
 This plugin implements the following extensions to the API.
@@ -101,3 +105,27 @@ The Admin UI extension adds a favorites field to the customer detail page, allow
 ![hidden-favorites](https://github.com/drewterry/vendure-favorites-plugin/blob/master/docs/hidden-favorites.png?raw=true)
 
 ![show-favorites](https://github.com/drewterry/vendure-favorites-plugin/blob/master/docs/show-favorites.png?raw=true)
+
+## Development Server
+
+A development server is configured in the `dev-server` folder, using [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/) to spin up a Postgres database, as well as a server and worker.  This is used to test the plugin during development.
+
+To start the server, run:
+
+```bash
+yarn run:dev
+```
+
+To populate or reset the database, run the following command:
+
+```bash
+yarn populate
+```
+
+## GraphQL Type Generation
+
+Some types are generated automatically using [`graphql-codegen`]().  To re-generate types after a change, make sure the development server is running, and use the command:
+
+```bash
+yarn generate-types
+```

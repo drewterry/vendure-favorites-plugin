@@ -10,7 +10,7 @@ import path from 'path';
 import { FavoritesPlugin } from '../src/plugin';
 import { compileUiExtensions } from '@vendure/ui-devkit/compiler';
 
-export const config: VendureConfig = {
+export const headlessConfig: VendureConfig = {
   apiOptions: {
       port: 3000,
       adminApiPath: 'admin-api',
@@ -59,21 +59,28 @@ export const config: VendureConfig = {
   plugins: [
       AssetServerPlugin.init({
           route: 'assets',
-          assetUploadDir: path.join(__dirname, '../static/assets'),
+          assetUploadDir: path.join(__dirname, './static/assets'),
           port: 3001,
       }),
       DefaultJobQueuePlugin,
       DefaultSearchPlugin,
-      FavoritesPlugin,
-      AdminUiPlugin.init({ 
-          port: 3002,
-          app: compileUiExtensions({
-              devMode: true,
-              outputPath: path.join(__dirname, 'admin-ui'),
-              extensions: [
-                  FavoritesPlugin.uiExtensions,
-              ],
-          })
-      }),
+      FavoritesPlugin
   ],
 };
+
+export const config: VendureConfig = {
+    ...headlessConfig,
+    plugins: [
+        ...headlessConfig.plugins || [],
+        AdminUiPlugin.init({ 
+            port: 3002,
+            app: compileUiExtensions({
+                devMode: true,
+                outputPath: path.join(__dirname, 'admin-ui'),
+                extensions: [
+                    FavoritesPlugin.uiExtensions,
+                ],
+            })
+        }),
+    ]
+}
