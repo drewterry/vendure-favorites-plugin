@@ -47,7 +47,25 @@ AdminUiPlugin.init({
 
 ## Plugin Options
 
+To configure the plugin, use the init function instead of providing the class in the VendureConfig:
 
+```ts
+import { FavoritesPlugin } from "vendure-favorites-plugin";
+
+export const config: VendureConfig = {
+  ...
+  plugins: [
+    ...,
+    FavoritesPlugin.init({
+      // options
+    })
+  ]
+}
+```
+
+Valid options include:
+
+`trackHistory` (default: false): This boolean controls when the customer's favorites are recorded as events in their history.
 
 ## API Extensions
 

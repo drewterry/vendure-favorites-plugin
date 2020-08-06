@@ -12,20 +12,26 @@ import {
     CustomerService,
     ProductService
 } from '@vendure/core';
+import { Inject } from '@nestjs/common';
 import { Connection } from 'typeorm';
 import { Favorite } from '../entities/favorite.entity';
 import { HistoryService } from '@vendure/core/dist/service/services/history.service';
 import { HistoryEntryType } from '@vendure/common/lib/generated-types';
+import { PLUGIN_INIT_OPTIONS } from '../constants';
+import { PluginInitOptions } from '../types';
 
 @Resolver()
 export class FavoriteShopResolver {
   constructor(
       @InjectConnection() private connection: Connection,
+      @Inject(PLUGIN_INIT_OPTIONS) private options: PluginInitOptions,
       private listQueryBuilder: ListQueryBuilder,
       private customerService: CustomerService,
       private productService: ProductService,
       private historyService: HistoryService
-  ) {}
+  ) {
+    console.log(options)
+  }
 
   @Mutation()
   @Allow(Permission.Owner)
@@ -45,8 +51,6 @@ export class FavoriteShopResolver {
       relations: ['customer', 'product'],
     })
 
-    let productName = favorite?.product.name
-
     if (favorite) {
       await favoriteRepo.remove(favorite)
     } else {
@@ -54,23 +58,29 @@ export class FavoriteShopResolver {
         customer: { id: customerId }, 
         product: { id: productId }
       })
-
-      const res = await this.productService.findOne(ctx, productId)
-      
-      productName = res?.name
     }
     
-    const note = favorite ? `removed ${productName} from` : `added ${productName} to`
-    this.historyService.createHistoryEntryForCustomer({
-        ctx,
-        customerId,
-        type: HistoryEntryType.CUSTOMER_NOTE,
-        data: {
-            note: `Customer ${note} favorites.`,
+    if (this.options.trackHistory) {
+
+      let productName = favorite?.product.name
+
+      if (!productName) {
+        const res = await this.productService.findOne(ctx, productId)
+        productName = res?.name
+      }
+
+      const note = favorite ? `removed ${productName} from` : `added ${productName} to`
+      this.historyService.createHistoryEntryForCustomer({
+          ctx,
+          customerId,
+          type: HistoryEntryType.CUSTOMER_NOTE,
+          data: {
+              note: `Customer ${note} favorites.`,
+          },
         },
-      },
-      false
-    )
+        false
+      )
+    }
 
     return this.listQueryBuilder
       .build(Favorite, args.options || undefined, {

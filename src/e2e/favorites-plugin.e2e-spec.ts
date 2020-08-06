@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { createTestEnvironment, registerInitializer, SqljsInitializer } from '@vendure/testing';
+import { createTestEnvironment, registerInitializer, SqljsInitializer, SimpleGraphQLClient } from '@vendure/testing';
 import path from 'path';
 
 import { FavoritesPlugin } from '../plugin';
@@ -17,117 +17,155 @@ describe('favorites plugin', () => {
     const CUSTOMER_ID = '1'
     const FAVORITE_PRODUCT_ID = '5'
 
-    const { server, adminClient, shopClient } = createTestEnvironment({
-        ...testConfig,
-        plugins: [FavoritesPlugin],
-    });
+    describe('without tracking (default)', () => {
 
-    beforeAll(async () => {
-        await server.init({
-            initialData,
-            productsCsvPath: path.join(__dirname, 'config/e2e-products.csv'),
-            customerCount: 1,
-            logging: true
+        const { server, adminClient, shopClient } = createTestEnvironment({
+            ...testConfig,
+            plugins: [FavoritesPlugin],
         });
-        await adminClient.asSuperAdmin();
-    }, TEST_SETUP_TIMEOUT_MS);
 
-    afterAll(async () => {
-        await server.destroy();
-    });
+        beforeAll(async () => {
+            await server.init({
+                initialData,
+                productsCsvPath: path.join(__dirname, 'config/e2e-products.csv'),
+                customerCount: 1,
+                logging: true
+            });
+            await adminClient.asSuperAdmin();
+        }, TEST_SETUP_TIMEOUT_MS);
 
-    describe('shop api', () => {
-        beforeAll(async () => await setActiveCustomer(CUSTOMER_ID))
+        afterAll(async () => {
+            await server.destroy();
+        });
 
-        it('returns favorites with customer', async () => {
-            const { activeCustomer } = await shopClient.query<
-                GetOwnFavorites.Query,
-                GetOwnFavorites.Variables
-            >(GET_OWN_FAVORITES)        
+        describe('shop api', () => {
+            beforeAll(async () => await setActiveCustomer(CUSTOMER_ID, adminClient, shopClient))
 
-            expect(activeCustomer?.favorites.items).toHaveLength(0)
-        })
+            it('can favorite a product', async () => {
+                const { toggleFavorite } = await shopClient.query<
+                    ToggleFavorite.Mutation,
+                    ToggleFavorite.Variables
+                >(TOGGLE_FAVORITE, {
+                    productId: FAVORITE_PRODUCT_ID
+                })
 
-        it('can favorite a product', async () => {
-            const { toggleFavorite } = await shopClient.query<
-                ToggleFavorite.Mutation,
-                ToggleFavorite.Variables
-            >(TOGGLE_FAVORITE, {
-                productId: FAVORITE_PRODUCT_ID
+                expect(toggleFavorite.items).toHaveLength(1)
+                expect(toggleFavorite.items[0].product?.id).toEqual(`T_${FAVORITE_PRODUCT_ID}`)
+
+                const { activeCustomer } = await shopClient.query<
+                    GetOwnFavorites.Query,
+                    GetOwnFavorites.Variables
+                >(GET_OWN_FAVORITES)        
+
+                expect(activeCustomer?.favorites.items).toHaveLength(1)
+                expect(activeCustomer?.favorites.items[0].product?.id).toEqual(`T_${FAVORITE_PRODUCT_ID}`)
             })
 
-            expect(toggleFavorite.items).toHaveLength(1)
-            expect(toggleFavorite.items[0].product?.id).toEqual(`T_${FAVORITE_PRODUCT_ID}`)
+            it('can unfavorite a product', async () => {
+                const { toggleFavorite } = await shopClient.query<
+                    ToggleFavorite.Mutation,
+                    ToggleFavorite.Variables
+                >(TOGGLE_FAVORITE, {
+                    productId: FAVORITE_PRODUCT_ID
+                })
 
-            const { activeCustomer } = await shopClient.query<
-                GetOwnFavorites.Query,
-                GetOwnFavorites.Variables
-            >(GET_OWN_FAVORITES)        
+                expect(toggleFavorite.items).toHaveLength(0)
 
-            expect(activeCustomer?.favorites.items).toHaveLength(1)
-            expect(activeCustomer?.favorites.items[0].product?.id).toEqual(`T_${FAVORITE_PRODUCT_ID}`)
+                const { activeCustomer } = await shopClient.query<
+                    GetOwnFavorites.Query,
+                    GetOwnFavorites.Variables
+                >(GET_OWN_FAVORITES)        
+
+                expect(activeCustomer?.favorites.items).toHaveLength(0)
+            })
         })
 
-        it('adds a history event for customer favorite', async () => {
-            const { customer: { history: { items: history } } } = await adminClient.query<
-                GetCustomer.Query,
-                GetCustomer.Variables
-            >(GET_CUSTOMER, {
-                customerId: CUSTOMER_ID
+        describe('admin api', () => {
+            it('returns favorites with customer', async () => {
+                const { customer } = await adminClient.query<
+                    GetCustomerFavorites.Query,
+                    GetCustomerFavorites.Variables
+                >(GET_CUSTOMER_FAVORITES, {
+                    customerId: CUSTOMER_ID
+                })
+
+            
+                expect(customer?.favorites.items).toHaveLength(0)
             })
-
-            const favoriteEvent = history.pop()
-
-            expect(favoriteEvent.data.note).toMatch('Customer added')
-        })
-
-        it('can unfavorite a product', async () => {
-            const { toggleFavorite } = await shopClient.query<
-                ToggleFavorite.Mutation,
-                ToggleFavorite.Variables
-            >(TOGGLE_FAVORITE, {
-                productId: FAVORITE_PRODUCT_ID
-            })
-
-            expect(toggleFavorite.items).toHaveLength(0)
-
-            const { activeCustomer } = await shopClient.query<
-                GetOwnFavorites.Query,
-                GetOwnFavorites.Variables
-            >(GET_OWN_FAVORITES)        
-
-            expect(activeCustomer?.favorites.items).toHaveLength(0)
-        })
-
-        it('adds a history event for customer unfavorite', async () => {
-            const { customer: { history: { items: history } } } = await adminClient.query<
-                GetCustomer.Query,
-                GetCustomer.Variables
-            >(GET_CUSTOMER, {
-                customerId: CUSTOMER_ID
-            })
-
-            const favoriteEvent = history.pop()
-
-            expect(favoriteEvent.data.note).toMatch('Customer removed')
         })
     })
 
-    describe('admin api', () => {
-        it('returns favorites with customer', async () => {
-            const { customer } = await adminClient.query<
-                GetCustomerFavorites.Query,
-                GetCustomerFavorites.Variables
-            >(GET_CUSTOMER_FAVORITES, {
-                customerId: CUSTOMER_ID
+    describe('with tracking', () => {
+
+        const { server, adminClient, shopClient } = createTestEnvironment({
+            ...testConfig,
+            plugins: [FavoritesPlugin.init({ trackHistory: true })],
+        });
+
+        beforeAll(async () => {
+            await server.init({
+                initialData,
+                productsCsvPath: path.join(__dirname, 'config/e2e-products.csv'),
+                customerCount: 1,
+                logging: true
+            });
+            await adminClient.asSuperAdmin();
+        }, TEST_SETUP_TIMEOUT_MS);
+
+        afterAll(async () => {
+            await server.destroy();
+        });
+
+        describe('shop api', () => {
+            beforeAll(async () => await setActiveCustomer(CUSTOMER_ID, adminClient, shopClient))
+
+            it('adds a history event for customer favorite', async () => {
+                await shopClient.query<
+                    ToggleFavorite.Mutation,
+                    ToggleFavorite.Variables
+                >(TOGGLE_FAVORITE, {
+                    productId: FAVORITE_PRODUCT_ID
+                })
+
+                const { customer: { history: { items: history } } } = await adminClient.query<
+                    GetCustomer.Query,
+                    GetCustomer.Variables
+                >(GET_CUSTOMER, {
+                    customerId: CUSTOMER_ID
+                })
+
+                const favoriteEvent = history.pop()
+
+                expect(favoriteEvent.data.note).toMatch('Customer added')
             })
 
-        
-            expect(customer?.favorites.items).toHaveLength(0)
+            it('adds a history event for customer unfavorite', async () => {
+                await shopClient.query<
+                    ToggleFavorite.Mutation,
+                    ToggleFavorite.Variables
+                >(TOGGLE_FAVORITE, {
+                    productId: FAVORITE_PRODUCT_ID
+                })
+                
+                const { customer: { history: { items: history } } } = await adminClient.query<
+                    GetCustomer.Query,
+                    GetCustomer.Variables
+                >(GET_CUSTOMER, {
+                    customerId: CUSTOMER_ID
+                })
+
+                const favoriteEvent = history.pop()
+
+                expect(favoriteEvent.data.note).toMatch('Customer removed')
+            })
         })
     })
 
-    async function setActiveCustomer(customerId: string): Promise<void> {
+    async function setActiveCustomer(
+        customerId: string, 
+        adminClient: SimpleGraphQLClient, 
+        shopClient: SimpleGraphQLClient
+    ): Promise<void> {
         const { customer } = await adminClient.query<
             GetCustomer.Query,
             GetCustomer.Variables
