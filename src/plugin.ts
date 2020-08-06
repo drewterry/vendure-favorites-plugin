@@ -20,7 +20,7 @@ import { PluginInitOptions } from './types';
  *   //...
  *   plugins: [
  *     FavoritesPlugin.init({
- *       // options
+ *       trackHistory: true
  *     }),
  *   ]
  * }
