@@ -102,7 +102,7 @@ export class FavoriteShopResolver {
     if (!userId) {
         throw new ForbiddenError();
     }
-    const customer = await this.customerService.findOneByUserId(userId);
+    const customer = await this.customerService.findOneByUserId(ctx, userId);
     if (!customer) {
         throw new InternalServerError(`error.no-customer-found-for-current-user`);
     }
