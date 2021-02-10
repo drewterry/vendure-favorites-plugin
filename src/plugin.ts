@@ -75,6 +75,7 @@ export class FavoritesPlugin {
   static uiExtensions: AdminUiExtension = {
     translations: {
       en: path.join(__dirname, 'ui/translations/en.json'),
+      de: path.join(__dirname, 'ui/translations/de.json'),
       pt_BR: path.join(__dirname, 'ui/translations/pt_BR.json'),
     },
     extensionPath: path.join(__dirname, 'ui'),
