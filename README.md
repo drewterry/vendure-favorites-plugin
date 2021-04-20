@@ -28,9 +28,11 @@ export const config: VendureConfig = {
 }
 ```
 
-This plugin includes an optional Admin UI Extension.
+This plugin includes an optional Admin UI Extension. Which gets compiled into the application bundle by the `compileUiExtensions` function exported by the `@vendure/ui-devkit` package
 
 ```ts
+import { compileUiExtensions } from '@vendure/ui-devkit/compiler';
+
 AdminUiPlugin.init({
   ...
   app: compileUiExtensions({

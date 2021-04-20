@@ -5,9 +5,9 @@ import { map, startWith, distinctUntilChanged, debounceTime, tap, takeUntil, swi
 
 
 import { FormControl } from '@angular/forms';
-import { CustomFieldConfigType, CustomFieldControl } from '@vendure/admin-ui/core';
-import { FavoritesService } from '../../providers/favorites.service';
-import { GetCustomerFavorites } from '../../generated-types';
+import { CustomFieldConfigType, CustomFieldControl, CustomFieldsFragment} from '@vendure/admin-ui/core';
+import {FavoritesService} from '../../providers/favorites.service';
+import {GetCustomerFavorites} from '../../generated-types';
 
 type StarType = 'empty' | 'full' | 'half';
 
@@ -20,7 +20,7 @@ type StarType = 'empty' | 'full' | 'half';
 export class FavoritesListComponent implements CustomFieldControl, OnInit, OnDestroy {
     customFieldConfig!: CustomFieldConfigType;
     formControl!: FormControl;
-    
+
     showList = false
     customerId$!: Observable<string | null>;
     favorites$!: Observable<GetCustomerFavorites.Items[]>;
@@ -31,7 +31,12 @@ export class FavoritesListComponent implements CustomFieldControl, OnInit, OnDes
     private refresh$ = new BehaviorSubject<boolean>(true);
     private destroy$ = new Subject<void>();
 
-    constructor(private route: ActivatedRoute, private router: Router, private favoritesService: FavoritesService) {}
+    constructor(private route: ActivatedRoute, private router: Router, private favoritesService: FavoritesService) {
+    }
+
+    isListInput?: boolean | undefined;
+    readonly: boolean;
+    config: CustomFieldsFragment;
 
     ngOnInit() {
         this.customerId$ = this.route.paramMap.pipe(
