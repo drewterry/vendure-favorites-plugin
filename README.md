@@ -149,3 +149,7 @@ Some types are generated automatically using [`graphql-codegen`]().  To re-gener
 ```bash
 yarn generate-types
 ```
+
+## Conventional Commits
+
+This project uses Coventional Commits along with commitlint and husky to enforce commit style.  This enables us to rely on semantic-release to automatically push updates to npm.
