@@ -25,6 +25,8 @@
     "generate-types": "graphql-codegen --config ./codegen.json"
   },
   "devDependencies": {
+    "@commitlint/cli": "^13.1.0",
+    "@commitlint/config-conventional": "^13.1.0",
     "@graphql-codegen/add": "^2.0.0",
     "@graphql-codegen/cli": "^1.17.7",
     "@graphql-codegen/typescript-compatibility": "^2.0.1",
@@ -36,6 +38,7 @@
     "@vendure/core": "^0.18.4",
     "@vendure/testing": "^0.18.4",
     "@vendure/ui-devkit": "^0.18.4",
+    "husky": "^7.0.1",
     "jest": "^26.2.1",
     "pg": "^8.3.0",
     "rimraf": "^3.0.2",
