@@ -3030,10 +3030,10 @@
   resolved "https://registry.yarnpkg.com/@ungap/global-this/-/global-this-0.4.4.tgz#8a1b2cfcd3e26e079a847daba879308c924dd695"
   integrity sha512-mHkm6FvepJECMNthFuIgpAEFmPOk71UyXuIxYfjytvFTnSDBIz7jmViO+LfHI/AjrazWije0PnSP3+/NlwzqtA==
 
-"@vendure/admin-ui-plugin@^0.18.4":
-  version "0.18.4"
-  resolved "https://registry.yarnpkg.com/@vendure/admin-ui-plugin/-/admin-ui-plugin-0.18.4.tgz#8392d56ab49c38f48b4a73492e15dd580ea31d00"
-  integrity sha512-9rE+KlTqxuYhEF6z6q/gWkK+kuSCzUYPCzrwz1QBO+DOpdGEIjHLqklMhImIxe9ZYBS+pYqDvI5EUSAn4eupOg==
+"@vendure/admin-ui-plugin@^1.1.5":
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/@vendure/admin-ui-plugin/-/admin-ui-plugin-1.1.5.tgz#00d1eb841dddcffd83dff610bf554e254db2cd16"
+  integrity sha512-QX1iPxyQ/bZLUC67+g+1BvOMOTmzoHAnPBbxCwMNA1uzDOmRvIVqFPfjSt5XUXkZsTqetpJWBpCpVRKHIuiX9g==
   dependencies:
     fs-extra "^9.0.1"
 
