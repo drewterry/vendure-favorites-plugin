@@ -3144,12 +3144,12 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@vendure/admin-ui-plugin@^0.18.4":
-  version "0.18.4"
-  resolved "https://registry.yarnpkg.com/@vendure/admin-ui-plugin/-/admin-ui-plugin-0.18.4.tgz#8392d56ab49c38f48b4a73492e15dd580ea31d00"
-  integrity sha512-9rE+KlTqxuYhEF6z6q/gWkK+kuSCzUYPCzrwz1QBO+DOpdGEIjHLqklMhImIxe9ZYBS+pYqDvI5EUSAn4eupOg==
+"@vendure/admin-ui-plugin@^1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@vendure/admin-ui-plugin/-/admin-ui-plugin-1.8.0.tgz#993954b3bc00daaef116c6e86a0b0c6dd3a9cb55"
+  integrity sha512-pIOA/aGbqeaDvFhYwknzPZYcK5QT0qXsQb9MdVyeJPg8is1gHwuePAe3eDbi99pYefpfJR8Sg9dpMEqRf0GXFQ==
   dependencies:
-    fs-extra "^9.0.1"
+    fs-extra "^10.0.0"
 
 "@vendure/admin-ui@^0.18.4":
   version "0.18.4"
