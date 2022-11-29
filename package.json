@@ -33,7 +33,7 @@
     "@graphql-codegen/typescript-operations": "^1.17.7",
     "@types/jest": "^26.0.7",
     "@vendure/admin-ui": "^1.7.0",
-    "@vendure/admin-ui-plugin": "^0.18.4",
+    "@vendure/admin-ui-plugin": "^1.8.5",
     "@vendure/asset-server-plugin": "^0.18.4",
     "@vendure/core": "^0.18.4",
     "@vendure/testing": "^0.18.4",
