@@ -35,7 +35,7 @@
     "@vendure/admin-ui": "^1.7.0",
     "@vendure/admin-ui-plugin": "^0.18.4",
     "@vendure/asset-server-plugin": "^0.18.4",
-    "@vendure/core": "^0.18.4",
+    "@vendure/core": "^1.9.1",
     "@vendure/testing": "^0.18.4",
     "@vendure/ui-devkit": "^0.18.4",
     "husky": "^7.0.1",
