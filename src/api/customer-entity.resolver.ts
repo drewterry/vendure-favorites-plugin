@@ -14,8 +14,8 @@ export class CustomerEntityResolver {
     const sql = this.listQueryBuilder
       .build(Favorite, args.options || undefined, {
         where: {
-          customer,
-        },
+            customer: { id: customer.id },
+          },
         relations: ['product', 'product.featuredAsset'],
       })
     

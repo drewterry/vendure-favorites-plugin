@@ -33,11 +33,11 @@
     "@graphql-codegen/typescript-operations": "^1.17.7",
     "@types/jest": "^26.0.7",
     "@vendure/admin-ui": "^1.7.0",
-    "@vendure/admin-ui-plugin": "^0.18.4",
-    "@vendure/asset-server-plugin": "^0.18.4",
-    "@vendure/core": "^0.18.4",
-    "@vendure/testing": "^0.18.4",
-    "@vendure/ui-devkit": "^0.18.4",
+    "@vendure/admin-ui-plugin": "^2.0.7",
+    "@vendure/asset-server-plugin": "^2.0.7",
+    "@vendure/core": "^2.0.7",
+    "@vendure/testing": "^2.0.7",
+    "@vendure/ui-devkit": "^2.0.7",
     "husky": "^7.0.1",
     "jest": "^26.2.1",
     "pg": "^8.3.0",
@@ -45,7 +45,7 @@
     "semantic-release": "^17.1.1",
     "ts-jest": "^26.1.4",
     "ts-node": "^9.1.1",
-    "typescript": "4.1.4"
+    "typescript": "4.9.5"
   },
   "repository": {
     "type": "git",
